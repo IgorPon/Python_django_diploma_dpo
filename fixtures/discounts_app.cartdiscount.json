@@ -1,0 +1,68 @@
+[
+{
+  "model": "discounts_app.cartdiscount",
+  "pk": 4,
+  "fields": {
+    "name": "RVideo cart discount",
+    "slug": "rvideo-cart-discount",
+    "description": "5% discount if total sum is higher than 3000$ and less than 10000%",
+    "type_of_discount": "p",
+    "priority": "1",
+    "percent": 5.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": true,
+    "seller": 1,
+    "min_quantity_threshold": 0,
+    "max_quantity_threshold": 0,
+    "total_sum_min_threshold": "3000.00",
+    "total_sum_max_threshold": "10000.00"
+  }
+},
+{
+  "model": "discounts_app.cartdiscount",
+  "pk": 5,
+  "fields": {
+    "name": "MediaBazar Cart Discount",
+    "slug": "mediabazar-cart-discount",
+    "description": "500 if more than 3 products in cart",
+    "type_of_discount": "f",
+    "priority": "1",
+    "percent": 0.0,
+    "amount": 500.0,
+    "fixed_price": 0.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": true,
+    "seller": 2,
+    "min_quantity_threshold": 3,
+    "max_quantity_threshold": 150,
+    "total_sum_min_threshold": "0.00",
+    "total_sum_max_threshold": "0.00"
+  }
+},
+{
+  "model": "discounts_app.cartdiscount",
+  "pk": 6,
+  "fields": {
+    "name": "Home comfort cart discoun",
+    "slug": "home-comfort-cart-discoun",
+    "description": "",
+    "type_of_discount": "fp",
+    "priority": "1",
+    "percent": 0.0,
+    "amount": 0.0,
+    "fixed_price": 299.0,
+    "valid_from": null,
+    "valid_to": null,
+    "is_active": true,
+    "seller": 3,
+    "min_quantity_threshold": 0,
+    "max_quantity_threshold": 0,
+    "total_sum_min_threshold": "5000.00",
+    "total_sum_max_threshold": "10000.00"
+  }
+}
+]

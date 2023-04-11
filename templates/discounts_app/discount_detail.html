@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load account socialaccount %}
+{% load goods_tags %}
+
+{% block title %}{% trans 'Discount detail' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                <h1 class="Middle-title">{% trans 'Discount' %}</h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="/">{% trans 'home' %}</a></li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Discount Detail' %}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+ <div class="Section">
+      <div class="wrap">
+        <div class="Product">
+          <div class="ProductCard">
+            <div class="ProductCard-look">
+              <div class="ProductCard-photo">
+                {% if discount.valid_from %}
+                    <div class="Card-date">
+                      <strong class="Card-date-number">{{ discount.valid_from.day }}
+                      </strong><span class="Card-date-month">{{ discount.valid_from|date:"M" }}</span>
+                    </div>
+                {% endif %}
+                {% if discount.valid_to %}
+                    <div class="Card-date Card-date_to">
+                      <strong class="Card-date-number">{{ discount.valid_to.day }}
+                      </strong><span class="Card-date-month">{{ discount.valid_to|date:"M" }}</span>
+                    </div>
+                {% endif %}
+                <img src="{{ discount.image.url }}" alt="bigGoods.png">
+              </div>
+            </div>
+            <div class="ProductCard-desc">
+              <div class="ProductCard-header">
+                <h2 class="ProductCard-title">{{ discount.name }}</h2>
+                <div class="ProductCard-info">
+                  <div class="ProductCard-cost">
+                    {% if discount.type_of_discount == 'p' %}
+                        <div class="ProductCard-price">{% trans 'Discount' %}: -{{ discount.percent|floatformat:0 }}%
+                        </div>
+                    {% elif discount.type_of_discount == 'f' %}
+                        <div class="ProductCard-price">{% trans 'Discount' %}: -{{ discount.amount|floatformat:2 }}$
+                        </div>
+                    {% else %}
+                        <div class="ProductCard-price">{% trans 'Fixed price' %}: {{ discount.fixed_price|floatformat:2 }}$
+                        </div>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="ProductCard-text">
+                {{ discount.description }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<div class="Section Section_dark">
+    <div class="wrap">
+      <div class="Section-content">
+        <div class="Slider Slider_carousel">
+          <header class="Section-header">
+            <h2 class="Section-title">{% trans 'Participating products' %}
+            </h2>
+            <div class="Section-control">
+              <div class="Slider-navigate">
+              </div>
+            </div>
+          </header>
+          <div class="Slider-box Cards Cards_hz">
+              {% cards products slider=True %}
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include 'elems/footer.html' %}
+{% endblock %}

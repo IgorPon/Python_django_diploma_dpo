@@ -1,0 +1,52 @@
+[
+{
+  "model": "banners_app.banner",
+  "pk": 1,
+  "fields": {
+    "discount": 5,
+    "title": "Hurry up!",
+    "description": "1000-things. Stock elimenation. 80% discount for everything and anything!",
+    "image": "banners/slider.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 2,
+  "fields": {
+    "discount": 4,
+    "title": "Home comfort for you",
+    "description": "Tables? Tables... Tables!!!\r\nWaiting for you in Home comfort for only 100$ each",
+    "image": "banners/HomeComfort.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 3,
+  "fields": {
+    "discount": 3,
+    "title": "Comp Friday in Mediabazar",
+    "description": "Ladies and gentlemen! Boys and girls! Comps Friday in Mediabazar! Be first or get lost! 100$ discount for each and every comp",
+    "image": "banners/CompFriday.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 4,
+  "fields": {
+    "discount": 1,
+    "title": "RVideo set special",
+    "description": "Don't be shy. Buy your phone with a case and get special discount",
+    "image": "banners/RVideoSet.png"
+  }
+},
+{
+  "model": "banners_app.banner",
+  "pk": 5,
+  "fields": {
+    "discount": 2,
+    "title": "Mediabazar BlackFriday",
+    "description": "You know what to do! Ready... Steady...Go...",
+    "image": "banners/BlackFriday.png"
+  }
+}
+]

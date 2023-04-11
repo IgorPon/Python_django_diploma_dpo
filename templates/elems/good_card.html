@@ -1,0 +1,69 @@
+{% load static %}
+{% load i18n %}
+
+<div id="cards_with_pagination">
+    <div class="Cards" id="good_card">
+        {% for elem in page_obj %}
+        <div class="Card">
+            <div class="store-name">
+                <a href="{% url 'stores-polls:store-detail' elem.seller.slug %}"><img src="{{elem.seller.icon_url}}" alt="store-icon"></a>
+            </div>
+            <a class="Card-picture" href="{% url 'orders-polls:add_viewed' %}?seller_product_id={{elem.id}}">
+                <img src="{{ elem.product.image_url }}" alt="card.jpg"/>
+            </a>
+            <div class="Card-content">
+                <strong class="Card-title"><a href="{{ elem.product.get_absolute_url }}">{{ elem.product }}</a>
+                </strong>
+                <div class="Card-description">
+                    <div class="Card-cost">
+
+                        {% if elem.price_after_discount %}
+                        <span class="Card-priceOld">{{ elem.price }}</span>
+                        <span class="Card-price">{{ elem.price_after_discount }}</span>
+                        {% else %}
+                        <span class="Card-price">{{ elem.price }}</span>
+                        {% endif %}
+
+                    </div>
+                    <div class="Card-category">{{elem.product.category}}</div>
+                    <div class="Card-hover">
+                        <a class="Card-btn" href="#">
+                            <img src="{% static 'assets/img/icons/card/bookmark.svg' %}" alt="bookmark.svg"/>
+                        </a>
+                        <a class="Card-btn" href="{% url 'orders-polls:cart_add' elem.id %}">
+                            <img src="{% static 'assets/img/icons/card/cart.svg' %}" alt="cart.svg"/>
+                        </a>
+                        <a class="Card-btn" href="{% url 'orders-polls:add-to-compare' elem.id %}">
+                            <img src="{% static 'assets/img/icons/card/change.svg' %}" alt="change.svg"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            {% if elem.discount.type_of_discount == 'p' and not elem.discount.set_discount %}
+            <div class="Card-sale">
+                -{{ elem.discount.percent|floatformat:0}}%
+            </div>
+
+            {% elif elem.discount.type_of_discount == 'f' and not elem.discount.set_discount %}
+            <div class="Card-sale" style="background-color: #d00d0d">
+                -{{ elem.discount.amount|floatformat:0}}$
+            </div>
+
+            {% elif elem.discount.type_of_discount == 'fp' and not elem.discount.set_discount %}
+            <div class="Card-sale" style="background-color: #6888fc">
+                !!!
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% include 'elems/pagination.html' %}
+
+</div>
+
+
+

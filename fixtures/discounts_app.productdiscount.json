@@ -1,0 +1,134 @@
+[
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 1,
+  "fields": {
+    "name": "Special RVideo Set",
+    "slug": "special-rvideo-set",
+    "description": "Phone with case with fixed discount of 50$",
+    "type_of_discount": "f",
+    "priority": "3",
+    "percent": 0.0,
+    "amount": 50.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-04-01T16:23:17Z",
+    "valid_to": "2022-04-30T16:23:23Z",
+    "is_active": true,
+    "seller": 1,
+    "set_discount": true,
+    "image": "discounts/product.png",
+    "seller_products": [
+      6,
+      12
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 2,
+  "fields": {
+    "name": "MediaBazar Black Friday",
+    "slug": "mediabazar-black-friday",
+    "description": "50% black friday discount in Mediabazar for TVs",
+    "type_of_discount": "p",
+    "priority": "3",
+    "percent": 50.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-04-01T15:38:52Z",
+    "valid_to": "2022-04-30T15:38:55Z",
+    "is_active": true,
+    "seller": 2,
+    "set_discount": false,
+    "image": "discounts/product.png",
+    "seller_products": [
+      21,
+      22
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 3,
+  "fields": {
+    "name": "MediaBazar CompsFriday",
+    "slug": "mediabazar-compsfriday",
+    "description": "BlackFriday special for comps in Mediabazar. 100$ discount for any comp",
+    "type_of_discount": "f",
+    "priority": "3",
+    "percent": 0.0,
+    "amount": 100.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-04-01T15:42:35Z",
+    "valid_to": "2022-04-30T15:42:38Z",
+    "is_active": true,
+    "seller": 2,
+    "set_discount": false,
+    "image": "discounts/Rectangle_19.jpg",
+    "seller_products": [
+      16,
+      17,
+      18,
+      19
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 4,
+  "fields": {
+    "name": "Home comfort tables spec",
+    "slug": "home-comfort-tables-spec",
+    "description": "Any table in Home Comfort for 100$ only this week",
+    "type_of_discount": "fp",
+    "priority": "3",
+    "percent": 0.0,
+    "amount": 0.0,
+    "fixed_price": 100.0,
+    "valid_from": "2022-04-01T15:48:58Z",
+    "valid_to": "2022-04-30T15:49:01Z",
+    "is_active": true,
+    "seller": 3,
+    "set_discount": false,
+    "image": "discounts/product.png",
+    "seller_products": [
+      33,
+      34,
+      35
+    ]
+  }
+},
+{
+  "model": "discounts_app.productdiscount",
+  "pk": 5,
+  "fields": {
+    "name": "1000-things elimination",
+    "slug": "1000-things-elimination",
+    "description": "Stock elimination in 1000-things. 80% discount for everithing",
+    "type_of_discount": "p",
+    "priority": "3",
+    "percent": 80.0,
+    "amount": 0.0,
+    "fixed_price": 0.0,
+    "valid_from": "2022-01-01T15:51:39Z",
+    "valid_to": "2022-06-30T15:51:58Z",
+    "is_active": true,
+    "seller": 4,
+    "set_discount": false,
+    "image": "discounts/scale_1200.jpg",
+    "seller_products": [
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46
+    ]
+  }
+}
+]

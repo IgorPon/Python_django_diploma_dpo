@@ -1,0 +1,20 @@
+{% load static %}
+{% load i18n %}
+
+<ul style="display: flex; margin: 0; padding-right: 100px;">
+    {% get_current_language as LANGUAGE_CODE %}
+    {% get_available_languages as LANGUAGES %}
+    {% get_language_info_list for LANGUAGES as languages %}
+    {% for language in languages %}
+    <li style="padding-right: 15px" class="ControlPanel-title">
+        <a href=""
+           onclick="return false;"
+           data-href="{% url 'set_language' %}"
+           data-language_code="{{ language.code }}"
+           class="{% if language.code == LANGUAGE_CODE %}selected_lang{% endif %} lang_btn ControlPanel-title"
+        >
+        {{ language.code }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>

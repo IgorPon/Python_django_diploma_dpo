@@ -1,0 +1,23 @@
+{% load static %}
+{% load i18n %}
+{% load goods_tags %}
+
+  <div class="Section Section_dark">
+    <div class="wrap">
+      <div class="Section-content">
+        <div class="Slider Slider_carousel">
+          <header class="Section-header">
+            <h2 class="Section-title">{% trans 'Hot Offers' %}
+            </h2>
+            <div class="Section-control">
+              <div class="Slider-navigate">
+              </div>
+            </div>
+          </header>
+          <div class="Slider-box Cards Cards_hz">
+          {% cards hot_offers slider=True %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

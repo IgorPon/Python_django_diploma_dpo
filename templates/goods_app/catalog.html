@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+{% trans 'Catalog' %}
+{% endblock %}
+
+{% block header %}
+{% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+<div class="Middle Middle_top">
+    <div class="Middle-top">
+        <div class="wrap">
+            <div class="Middle-header">
+                <h1 class="Middle-title">{% trans 'Catalog Megano' %}
+                </h1>
+                <ul class="breadcrumbs Middle-breadcrumbs">
+                    <li class="breadcrumbs-item"><a href="{% url 'goods-polls:index_url' %}">{% trans 'home' %}</a>
+                    </li>
+                    <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Catalog' %}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft">
+        <div class="wrap">
+            <div class="Section-column">
+                <div class="Section-columnSection">
+                    <header class="Section-header">
+                        <strong class="Section-title">{% trans 'Filter' %}
+                        </strong>
+                    </header>
+                    <div class="Section-columnContent">
+                        <form class="form"
+                              action=""
+                              method="get"
+                              name="filterForm">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <div class="range Section-columnRange">
+                                    <input class="range-line" id="price" name="price" type="text"
+                                           data-type="double"
+                                           data-min="{{ mini }}"
+                                           data-max="{{ maxi }}"
+                                           data-from="{{ min }}"
+                                           data-to="{{  midi }}"/>
+                                    <div class="range-price">{% trans 'Price:' %}&#32;
+                                        <div class="rangePrice"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-input form-input_full" id="title" name="title" type="text"
+                                       placeholder="Название"/>
+                            </div>
+                            <div class="form-group">
+                                <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
+                                <select class="form-select" name="select" id="select">
+                                    <option value="seller" selected="selected" disabled="disabled">{% trans 'Seller:' %}
+                                    </option>
+
+                                    {% for seller in sellers %}
+                                    <option value="{{seller}}">{{ seller }}</option>
+                                    {% endfor %}
+
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="toggle">
+                                    <input class="che" type="checkbox" name="in_stock" value="0"/>
+                                    <span class="toggle-box"></span>
+                                    <span class="toggle-text">{% trans 'Only items in stock:' %}</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="toggle">
+                                    <input class="che" type="checkbox" name="is_hot" value="0"/>
+                                    <span class="toggle-box"></span>
+                                    <span class="toggle-text">{% trans 'Only limited offers:' %}</span>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <div class="buttons">
+                                    <button class="filter-btn btn btn_square btn_dark btn_narrow" type="submit"
+                                            onclick="return false;"
+                                            data-sort={{ sort_type }}
+                                            data-active=0
+                                            id="submit_btn">
+                                        {% trans 'Filter' %}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="Section-columnSection">
+                    <header class="Section-header">
+                        <strong
+                                class="Section-title"
+                                id="tag_status"
+                                data-tag_name=""
+                                data-tag_active=0>
+                            {% trans 'Popular tags' %}
+                        </strong>
+                    </header>
+                    <div class="Section-columnContent">
+
+                        <div class="buttons">
+
+                            {% for tag in tags %}
+                            {% if tag %}
+                            <a class="btn btn_default btn_sm tag_btn" href=""
+                               onclick="return false;"
+                               data-sort={{ sort_type }}
+                               data-in_use=0
+                               data-tag={{ tag.name }}>
+                                {{ tag.name }}
+                            </a>
+                            {% endif %}
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="Section-content">
+
+                <!--    ==================================================   SORTS  ================================================-->
+
+                <div class="Sort">
+                    <div class="Sort-title" data-sort_title="price_inc">
+                        {% trans 'Sort by:' %}
+                    </div>
+                    <div class="Sort-variants">
+
+                        <!--=========================================  SORT BY Popularity ==================================================-->
+
+                        <a class="Sort-sortBy" data-name="pop"
+                           data-sort="pop_inc" data-page="{{ page_obj.number }}"
+                           href="#" onclick="return false;">
+                            {% trans 'Popularity' %}
+                        </a>
+
+                        <!--    =========================================  SORT BY PRICE ====================================================-->
+
+                        <a class="Sort-sortBy Sort-sortBy_inc" data-name="price"
+                           data-sort="price_dec" data-page="{{ page_obj.number }}"
+                           href="#" onclick="return false;">
+                            {% trans 'Price' %}
+                        </a>
+
+                        <!-- =========================================  SORT BY COMMENTS ====================================================-->
+
+                        <a class="Sort-sortBy" data-name="comment"
+                           data-sort="comment_inc" data-page="{{ page_obj.number }}"
+                           href="#" onclick="return false;">
+                            {% trans 'Comments' %}
+                        </a>
+
+                        <!-- =========================================  SORT BY name =====================================================-->
+
+                        <a class="Sort-sortBy" data-name="name"
+                           data-sort="name_inc" data-page="{{ page_obj.number }}"
+                           href="#" onclick="return false;">
+                            {% trans 'Name' %}
+                        </a>
+
+                        <!-- =========================================  SORT BY newness ===================================================-->
+
+                        <a class="Sort-sortBy" data-name="newness"
+                           data-sort="newness_inc" data-page="{{ page_obj.number }}"
+                           href="#" onclick="return false;">
+                            {% trans 'Newness' %}
+                        </a>
+
+                    </div>
+                </div>
+
+
+                <!-- ============================================  CARDS INCLUDE ====================================================-->
+
+
+                {% include 'elems/good_card.html' %}
+
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}

@@ -1,0 +1,75 @@
+{% load static %}
+{% load i18n %}
+{% load goods_tags %}
+
+  <div class="Section Section_column Section_columnRight">
+    <div class="wrap">
+      <div class="Section-column">
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image">
+                <img src="{% static 'assets/img/icons/advantages/shipping.svg' %}" alt="shipping.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Shipping & Returns' %}
+              </strong>
+              <p class="media-text">{% trans 'World wide shipping' %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image">
+                <img src="{% static 'assets/img/icons/advantages/moneyBack.svg' %}" alt="moneyBack.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Money Back' %}
+              </strong>
+              <p class="media-text">{% trans 'Guaranted payments' %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image"><img src="{% static 'assets/img/icons/advantages/support.svg' %}" alt="support.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Support Policy' %}
+              </strong>
+              <p class="media-text">{% trans 'Fast support team' %}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="Section-columnSection Section-columnSection_mark">
+          <div class="media media_advantage">
+            <div class="media-image"><img src="{% static 'assets/img/icons/advantages/quality.svg' %}" alt="quality.svg"/>
+            </div>
+            <div class="media-content">
+              <strong class="media-title">{% trans 'Quality Guarantee' %}
+              </strong>
+              <p class="media-text">{% trans 'Best guaranted items' %}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="Section-content">
+        <div class="Slider Slider_carousel">
+          <header class="Section-header Section-header_close">
+            <h2 class="Section-title">{% trans 'Limited edition' %}
+            </h2>
+            <div class="Section-control">
+              <div class="Slider-navigate">
+              </div>
+            </div>
+          </header>
+          <div class="Slider-box Cards">
+            {% cards limited_products slider=True exclude=special_product %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

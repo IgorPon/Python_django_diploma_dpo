@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  {% trans 'Order step 1' %}
+{% endblock %}
+
+{%block header %}
+  {% include 'elems/header.html' %}
+{% endblock %}
+{%block main %}
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">{% trans 'Order checkout' %}
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="/">home</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>{% trans 'Order checkout' %}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Middle Middle_top">
+
+    <div class="Section Section_column Section_columnRight Section_columnWide Order">
+      <div class="wrap">
+        <div class="Section-column">
+          <div class="Section-columnSection">
+            <header class="Section-header">
+              <strong class="Section-title">{% trans 'Overall progress' %}
+              </strong>
+            </header>
+            <div class="Section-columnContent">
+              <ul class="menu menu_vt Order-navigate">
+                <li class="menu-item_ACTIVE menu-item">
+                    <a class="menu-link" href="{% url 'orders:order_step_one' %}">
+                        {% trans 'Step 1. User requisites' %}
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="{% url 'orders:order_step_two' %}">
+                        {% trans 'Step 2. Way of delivery' %}
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="{% url 'orders:order_step_three' %}">
+                        {% trans 'Step 3. Payment method' %}
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="{% url 'orders:order_step_four' %}">
+                        {% trans 'Step 4. Order confirmation' %}
+                    </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="Section-content">
+          <form class="form" action="{% url 'orders-polls:order_step_one' %}" method="post">
+            <div class="Order-block Order-block_OPEN" id="step1">
+              <header class="Section-header Section-header_sm">
+                <h2 class="Section-title">{% trans 'Step 1. User requisites' %}
+                </h2>
+              </header>
+              <div class="row">
+                <div class="row-block">
+                  <div class="form-group">
+                    <label class="form-label" for="name">
+                        {% trans 'Name Surname' %}
+                    </label>
+                    {{ form.fio }}
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="phone">{% trans 'Phone' %}
+                    </label>
+                      {{ form.phone }}
+                      <span class="formerror">{{form.errors.phone}}</span>
+
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="mail">{% trans 'E-mail' %}
+                    </label>
+                      {{ form.email }}
+                      <span class="formerror">{{form.errors.email}}</span>
+                  </div>
+                </div>
+                <div class="row-block">
+
+                </div>
+              </div>
+              <div class="Order-footer">
+                <button class="btn btn_success custom_login_btn-success" type="submit">{% trans 'Next' %}</button>
+              </div>
+              {% csrf_token %}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+{% endblock %}
+{% block footer %}
+{% include 'elems/footer.html' %}
+{% endblock %}
+{% block scripts %}
+  <script src="{% static 'assets/plg/jQuery/jquery-3.5.0.slim.min.js' %}"></script>
+  <script src="{% static 'assets/plg/form/jquery.form.js' %}"></script>
+  <script src="{% static 'assets/plg/form/jquery.maskedinput.min.js' %}"></script>
+  <script src="{% static 'assets/plg/range/ion.rangeSlider.min.js' %}"></script>
+  <script src="{% static 'assets/plg/Slider/slick.min.js' %}"></script>
+  <script src="{% static 'assets/js/scripts.js' %}"></script>
+{% endblock %}

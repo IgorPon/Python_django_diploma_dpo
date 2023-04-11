@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static i18n%}
+{% load cache %}
+{% load goods_tags %}
+
+{% block title %}
+  Megano
+{% endblock %}
+
+{% block header %}
+    {% include 'elems/header.html' %}
+{% endblock %}
+
+{% block main %}
+    {% cache banners_time_expire banners_block %}
+    {% block banners_block %}
+        {% include 'elems/banner.html' %}
+    {% endblock %}
+    {% endcache %}
+<div class="Middle">
+    {% block random_categories %}
+        {% include 'elems/random_categories.html' %}
+    {% endblock %}
+  <div class="Section Section_column Section_columnLeft Section_columnDesktop">
+    <div class="wrap">
+        {% if special_product %}
+        {% block special_product %}
+            {% include 'elems/special_product.html' %}
+        {% endblock %}
+        {% endif %}
+      <div class="Section-content">
+        <header class="Section-header">
+          <h2 class="Section-title">{%  trans 'Popular Products' %}
+          </h2>
+        </header>
+        <div class="Cards">
+            {% cards products %}
+        </div>
+      </div>
+    </div>
+  </div>
+    {% block hot_offers %}
+        {% include 'elems/hot_offers.html' %}
+    {% endblock %}
+    {% if limited_products %}
+    {% block limited_products %}
+        {% include 'elems/limited_products.html' %}
+    {% endblock %}
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block footer %}
+    {% include 'elems/footer.html' %}
+{% endblock %}
