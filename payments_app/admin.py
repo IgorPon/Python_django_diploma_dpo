@@ -4,4 +4,4 @@ from payments_app.models import PaymentRequest
 
 @admin.register(PaymentRequest)
 class PaymentRequestAdmin(admin.ModelAdmin):
-    list_display = ['order', 'account']
+    list_display = ["order", "account"]

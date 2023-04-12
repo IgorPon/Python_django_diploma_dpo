@@ -7,7 +7,7 @@ from django.forms import EmailField
 User = get_user_model()
 
 
-def get_user_and_change_password(email: 'EmailField') -> Union['User', bool]:
+def get_user_and_change_password(email: "EmailField") -> Union["User", bool]:
     """
     Function for changing password when it need to restore
     """
@@ -24,17 +24,17 @@ def get_auth_user(data: Dict) -> Callable:
     """
     Authentication user
     """
-    email = data['email']
-    raw_password = data['password1']
+    email = data["email"]
+    raw_password = data["password1"]
     return authenticate(email=email, password=raw_password)
 
 
-def reset_phone_format(instance: 'User') -> None:
+def reset_phone_format(instance: "User") -> None:
     """
     Reset phone format
     """
     try:
-        instance.phone = instance.phone[3:].replace(')', '').replace('-', '')
-        instance.save(update_fields=['phone'])
+        instance.phone = instance.phone[3:].replace(")", "").replace("-", "")
+        instance.save(update_fields=["phone"])
     except AttributeError:
         pass

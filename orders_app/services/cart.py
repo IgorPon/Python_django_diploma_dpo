@@ -20,11 +20,12 @@ class CartService:
     get_total_discounted_sum: получение общей суммы товаров в корзине со скидками
     clear: очистка корзины
     """
+
     def __init__(self, request):
         if request.user.is_authenticated:
-            self.cart, _ = Order.objects.get_or_create(defaults={'customer': request.user},
-                                                       customer=request.user,
-                                                       in_order=False)
+            self.cart, _ = Order.objects.get_or_create(
+                defaults={"customer": request.user}, customer=request.user, in_order=False
+            )
 
         else:
             self.cart = AnonymCart(request)
@@ -54,10 +55,7 @@ class CartService:
         if isinstance(self.cart, Order):
             cart_product = OrderProduct.objects.filter(order=self.cart, seller_product=product).first()
             if not cart_product:
-                cart_product = OrderProduct(order=self.cart,
-                                            seller_product=product,
-                                            quantity=0,
-                                            final_price=price)
+                cart_product = OrderProduct(order=self.cart, seller_product=product, quantity=0, final_price=price)
 
             if update_quantity:
                 delta = quantity - cart_product.quantity
@@ -93,7 +91,7 @@ class CartService:
     def get_goods(self) -> Union[OrderProduct, AnonymCart]:
         """получить товары из корзины"""
         if isinstance(self.cart, Order):
-            return self.cart.order_products.prefetch_related('seller_product__product_discounts').all()
+            return self.cart.order_products.prefetch_related("seller_product__product_discounts").all()
         return self.cart
 
     def get_quantity(self) -> int:
@@ -109,7 +107,10 @@ class CartService:
     def merge_carts(self, other):
         """Перенос анонимной корзины в корзину зарегистрированного"""
         for item in other.get_goods():
-            self.add_to_cart(item['seller_product'], item['quantity'],)
+            self.add_to_cart(
+                item["seller_product"],
+                item["quantity"],
+            )
         other.clear()
 
     def clear(self) -> None:

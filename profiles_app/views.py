@@ -25,8 +25,9 @@ class UserLogin(LoginView):
 
     ::Страница: Логин пользователя
     """
-    template_name = 'account/login.html'
-    success_url = '/'
+
+    template_name = "account/login.html"
+    success_url = "/"
 
     def get_success_url(self) -> str:
         if not self.success_url:
@@ -52,8 +53,9 @@ class UserLogout(LogoutView):
 
     ::Страница: Логаут пользователя
     """
-    template_name = 'account/logout.html'
-    next_page = '/users/login'
+
+    template_name = "account/logout.html"
+    next_page = "/users/login"
 
 
 class RegisterView(View):
@@ -62,9 +64,10 @@ class RegisterView(View):
 
     ::Страница: Регистрация пользователей
     """
+
     def get(self, request: HttpRequest) -> Callable:
         form = RegisterForm()
-        return render(request, 'account/signup.html', context={'form': form})
+        return render(request, "account/signup.html", context={"form": form})
 
     def post(self, request: HttpRequest) -> Callable:
         """
@@ -79,8 +82,8 @@ class RegisterView(View):
             login(request, get_auth_user(data=form.cleaned_data))
             new_cart = CartService(self.request)
             new_cart.merge_carts(old_cart)
-            return redirect('/')
-        return render(request, 'account/signup.html', context={'form': form})
+            return redirect("/")
+        return render(request, "account/signup.html", context={"form": form})
 
 
 class RestorePasswordView(View):
@@ -89,24 +92,24 @@ class RestorePasswordView(View):
 
     ::Страница: Восстановление пароля
     """
+
     def get(self, request: HttpRequest) -> Callable:
         form = RestorePasswordForm()
-        return render(request, 'account/password_reset.html', context={'form': form})
+        return render(request, "account/password_reset.html", context={"form": form})
 
     def post(self, request: HttpRequest) -> Callable:
         form = RestorePasswordForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data['email']
+            email = form.cleaned_data["email"]
             user = get_user_and_change_password(email=email)
             if user:
-                send_mail(subject='Restore Password',
-                          message='Test',
-                          from_email='admin@example.com',
-                          recipient_list=[email])
-                return render(request, 'account/password_reset_done.html', context={'form': form})
+                send_mail(
+                    subject="Restore Password", message="Test", from_email="admin@example.com", recipient_list=[email]
+                )
+                return render(request, "account/password_reset_done.html", context={"form": form})
             else:
-                return render(request, 'account/password_reset_error.html')
-        return render(request, 'account/password_reset.html', context={'form': form})
+                return render(request, "account/password_reset_error.html")
+        return render(request, "account/password_reset.html", context={"form": form})
 
 
 class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
@@ -115,7 +118,8 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
 
     ::Страница: Аккаунт
     """
-    template_name = 'account/account.html'
+
+    template_name = "account/account.html"
 
     def get(self, request: HttpRequest) -> Callable:
         viewed = list(self.get_viewed_products(user=request.user))[-3:]
@@ -123,11 +127,8 @@ class AccountView(LoginRequiredMixin, StoreServiceMixin, View):
             products = get_discounted_prices_for_seller_products(viewed)
         else:
             products = False
-        context = {
-            'last_order': self.get_last_order(user=request.user),
-            'viewed_products': products
-        }
-        return render(request, 'account/account.html', context=context)
+        context = {"last_order": self.get_last_order(user=request.user), "viewed_products": products}
+        return render(request, "account/account.html", context=context)
 
 
 class AccountEditView(LoginRequiredMixin, View):
@@ -136,16 +137,16 @@ class AccountEditView(LoginRequiredMixin, View):
 
     ::Страница: Аккаунт
     """
+
     def get(self, request: HttpRequest) -> Callable:
         form = AccountEditForm()
-        return render(request, 'account/profile.html', context={'form': form})
+        return render(request, "account/profile.html", context={"form": form})
 
     def post(self, request: HttpRequest) -> Callable:
         form = AccountEditForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             user = form.save()
             reset_phone_format(instance=user)
-            messages.add_message(request, messages.SUCCESS,
-                                 _('The profile was saved successfully'))
-            return render(request, 'account/profile.html', context={'form': form})
-        return render(request, 'account/profile.html', context={'form': form})
+            messages.add_message(request, messages.SUCCESS, _("The profile was saved successfully"))
+            return render(request, "account/profile.html", context={"form": form})
+        return render(request, "account/profile.html", context={"form": form})

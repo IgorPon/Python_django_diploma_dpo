@@ -41,10 +41,10 @@ class DiscountsService:
         discounts = self.get_all_discounts_for_products()
         for discount in discounts:
             class_name = discount.__class__.__name__
-            if class_name == 'CartDiscount':
+            if class_name == "CartDiscount":
                 if self.check_cart_discount(discount):
                     priority_discounts.append(discount)
-            elif class_name == 'ProductDiscount':
+            elif class_name == "ProductDiscount":
                 if discount.set_discount:
                     if self.check_set_discount(discount):
                         priority_discounts.append(discount)
@@ -64,44 +64,56 @@ class DiscountsService:
         """
         discounts = []
 
-        if product.__class__.__name__ == 'OrderProduct':
-            discounts += product.seller_product.seller.cart_discounts.filter(valid_from=None,
-                                                                             valid_to=None,
-                                                                             is_active=True).all() | \
-                         product.seller_product.seller.cart_discounts.filter(valid_from__lte=date.today(),
-                                                                             valid_to__gte=date.today(),
-                                                                             is_active=True).all()
-            discounts += product.seller_product.product.category.group_discounts.filter(valid_from=None,
-                                                                                        valid_to=None,
-                                                                                        is_active=True).all() | \
-                         product.seller_product.product.category.group_discounts.filter(valid_from__lte=date.today(),
-                                                                                        valid_to__gte=date.today(),
-                                                                                        is_active=True).all()
-            discounts += product.seller_product.product_discounts.filter(valid_from=None,
-                                                                         valid_to=None,
-                                                                         is_active=True).all() | \
-                         product.seller_product.product_discounts.filter(valid_from__lte=date.today(),
-                                                                         valid_to__gte=date.today(),
-                                                                         is_active=True).all()
+        if product.__class__.__name__ == "OrderProduct":
+            discounts += (
+                product.seller_product.seller.cart_discounts.filter(
+                    valid_from=None, valid_to=None, is_active=True
+                ).all()
+                | product.seller_product.seller.cart_discounts.filter(
+                    valid_from__lte=date.today(), valid_to__gte=date.today(), is_active=True
+                ).all()
+            )
+            discounts += (
+                product.seller_product.product.category.group_discounts.filter(
+                    valid_from=None, valid_to=None, is_active=True
+                ).all()
+                | product.seller_product.product.category.group_discounts.filter(
+                    valid_from__lte=date.today(), valid_to__gte=date.today(), is_active=True
+                ).all()
+            )
+            discounts += (
+                product.seller_product.product_discounts.filter(valid_from=None, valid_to=None, is_active=True).all()
+                | product.seller_product.product_discounts.filter(
+                    valid_from__lte=date.today(), valid_to__gte=date.today(), is_active=True
+                ).all()
+            )
         else:
-            discounts += product['seller_product'].seller.cart_discounts.filter(valid_from=None,
-                                                                                valid_to=None,
-                                                                                is_active=True).all() | \
-                         product['seller_product'].seller.cart_discounts.filter(valid_from__lte=date.today(),
-                                                                                valid_to__gte=date.today(),
-                                                                                is_active=True).all()
-            discounts += product['seller_product'].product.category.group_discounts.filter(valid_from=None,
-                                                                                           valid_to=None,
-                                                                                           is_active=True).all() | \
-                         product['seller_product'].product.category.group_discounts.filter(valid_from__lte=date.today(),
-                                                                                           valid_to__gte=date.today(),
-                                                                                           is_active=True).all()
-            discounts += product['seller_product'].product_discounts.filter(valid_from=None,
-                                                                            valid_to=None,
-                                                                            is_active=True).all() | \
-                         product['seller_product'].product_discounts.filter(valid_from__lte=date.today(),
-                                                                            valid_to__gte=date.today(),
-                                                                            is_active=True).all()
+            discounts += (
+                product["seller_product"]
+                .seller.cart_discounts.filter(valid_from=None, valid_to=None, is_active=True)
+                .all()
+                | product["seller_product"]
+                .seller.cart_discounts.filter(valid_from__lte=date.today(), valid_to__gte=date.today(), is_active=True)
+                .all()
+            )
+            discounts += (
+                product["seller_product"]
+                .product.category.group_discounts.filter(valid_from=None, valid_to=None, is_active=True)
+                .all()
+                | product["seller_product"]
+                .product.category.group_discounts.filter(
+                    valid_from__lte=date.today(), valid_to__gte=date.today(), is_active=True
+                )
+                .all()
+            )
+            discounts += (
+                product["seller_product"]
+                .product_discounts.filter(valid_from=None, valid_to=None, is_active=True)
+                .all()
+                | product["seller_product"]
+                .product_discounts.filter(valid_from__lte=date.today(), valid_to__gte=date.today(), is_active=True)
+                .all()
+            )
 
         return discounts
 
@@ -128,7 +140,7 @@ class DiscountsService:
         Проверка применимости корзинной скидки для данной корзины
         """
         cart_products = self.cart.get_goods()
-        if cart_products.__class__.__name__ == 'QuerySet':
+        if cart_products.__class__.__name__ == "QuerySet":
             ids = []
             for product in cart_products:
                 ids.append(product.seller_product.seller.id)
@@ -136,7 +148,7 @@ class DiscountsService:
         else:
             ids = []
             for product in cart_products:
-                ids.append(product['seller_product'].seller.id)
+                ids.append(product["seller_product"].seller.id)
             length = len(set(ids))
 
         if length > 1:
@@ -153,10 +165,10 @@ class DiscountsService:
         Проверка применимости наборной скидки для данного набора
         """
         cart_products = self.cart.get_goods()
-        if cart_products.__class__.__name__ == 'QuerySet':
+        if cart_products.__class__.__name__ == "QuerySet":
             cart_products = [item.seller_product for item in cart_products]
         else:
-            cart_products = [item['seller_product'] for item in cart_products]
+            cart_products = [item["seller_product"] for item in cart_products]
         discount_set_products = [item for item in discount.seller_products.all()]
         if set(discount_set_products) & set(cart_products) == set(discount_set_products):
             return True
@@ -168,14 +180,14 @@ class DiscountsService:
         """
         prices = []
         product_discounts = self.get_priority_discounts_for_product(product)
-        if product.__class__.__name__ == 'OrderProduct':
+        if product.__class__.__name__ == "OrderProduct":
             price = product.seller_product.price
         else:
-            price = product['seller_product'].price
+            price = product["seller_product"].price
 
         if product_discounts:
             for discount in product_discounts:
-                if discount.__class__.__name__ == 'CartDiscount':
+                if discount.__class__.__name__ == "CartDiscount":
                     cart_sum = self.cart.get_total_sum()
                     discounted_price = implement_discount(price, discount, cart_sum)
                 else:
@@ -199,24 +211,22 @@ class DiscountsService:
 
 def implement_discount(price: decimal, discount, cart_sum=None):
     """Функция расчета цены со скидкой"""
-    if discount.__class__.__name__ == 'ProductDiscount' and \
-            discount.set_discount is True or cart_sum:
-
-        if discount.type_of_discount == 'f':
+    if discount.__class__.__name__ == "ProductDiscount" and discount.set_discount is True or cart_sum:
+        if discount.type_of_discount == "f":
             if cart_sum:
                 set_sum = cart_sum
             else:
                 set_sum = sum([item.price for item in discount.seller_products.all()])
             set_sum_with_discount = set_sum - Decimal(discount.amount)
             price = Decimal(price * set_sum_with_discount / set_sum)
-        elif discount.type_of_discount == 'p':
+        elif discount.type_of_discount == "p":
             price *= Decimal((100 - discount.percent) / 100)
         else:
             price = Decimal(discount.fixed_price)
 
-    elif discount.type_of_discount == 'f':
+    elif discount.type_of_discount == "f":
         price -= Decimal(discount.amount)
-    elif discount.type_of_discount == 'p':
+    elif discount.type_of_discount == "p":
         price *= Decimal((100 - discount.percent) / 100)
     else:
         price = Decimal(discount.fixed_price)
@@ -236,10 +246,9 @@ def get_discounted_prices_for_seller_products(products: list, default_discount=N
     for product in products:
         price = product.price
         if default_discount is None:
-            discount = product.product_discounts.filter(
-                is_active=True,
-                set_discount=False
-            ).order_by('-priority').first()
+            discount = (
+                product.product_discounts.filter(is_active=True, set_discount=False).order_by("-priority").first()
+            )
         else:
             discount = default_discount
 

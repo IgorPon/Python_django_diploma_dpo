@@ -13,8 +13,7 @@ def process_payment(order_id: int, account: str) -> bool:
         order = get_object_or_404(Order, id=order_id)
         if order:
             if order.in_order and not order.paid:
-                PaymentRequest.objects.create(order=order_id,
-                                              account=account)
+                PaymentRequest.objects.create(order=order_id, account=account)
                 return True
         return False
 
@@ -31,13 +30,13 @@ def check_status(order_id: int) -> str:
         if order:
             if order.in_order is True:
                 if order.paid is True:
-                    return 'Paid'
+                    return "Paid"
                 else:
-                    return 'Not Paid'
-        return f'No order No {order_id}'
+                    return "Not Paid"
+        return f"No order No {order_id}"
 
     except (IndexError, KeyError, Http404):
-        return f'No order No {order_id}'
+        return f"No order No {order_id}"
 
     except ValueError:
-        return 'Order number is incorrect'
+        return "Order number is incorrect"

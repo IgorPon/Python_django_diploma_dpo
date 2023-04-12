@@ -16,35 +16,33 @@ def set_language(request):
     redirect to the page in the request (the 'next' parameter) without changing
     any state.
     """
-    print(f'********start')
+    print(f"********start")
     print(f'********  {request.POST["LANGUAGE_QUERY_PARAMETER"]}')
 
-    next_url = request.POST.get('next', request.GET.get('next'))
-    if (
-        (next_url or request.accepts('text/html')) and
-        not url_has_allowed_host_and_scheme(
-            url=next_url,
-            allowed_hosts={request.get_host()},
-            require_https=request.is_secure(),
-        )
+    next_url = request.POST.get("next", request.GET.get("next"))
+    if (next_url or request.accepts("text/html")) and not url_has_allowed_host_and_scheme(
+        url=next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
     ):
-        next_url = request.META.get('HTTP_REFERER')
+        next_url = request.META.get("HTTP_REFERER")
         if not url_has_allowed_host_and_scheme(
             url=next_url,
             allowed_hosts={request.get_host()},
             require_https=request.is_secure(),
         ):
-            next_url = '/'
+            next_url = "/"
     response = HttpResponseRedirect(next_url) if next_url else HttpResponse(status=204)
-    if request.method == 'POST':
-        lang_code = request.POST['LANGUAGE_QUERY_PARAMETER']
+    if request.method == "POST":
+        lang_code = request.POST["LANGUAGE_QUERY_PARAMETER"]
         if lang_code and check_for_language(lang_code):
             if next_url:
                 next_trans = translate_url(next_url, lang_code)
                 if next_trans != next_url:
                     response = HttpResponseRedirect(next_trans)
             response.set_cookie(
-                settings.LANGUAGE_COOKIE_NAME, lang_code,
+                settings.LANGUAGE_COOKIE_NAME,
+                lang_code,
                 max_age=settings.LANGUAGE_COOKIE_AGE,
                 path=settings.LANGUAGE_COOKIE_PATH,
                 domain=settings.LANGUAGE_COOKIE_DOMAIN,

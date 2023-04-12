@@ -11,8 +11,13 @@ from django.views.generic import DetailView, ListView
 from goods_app.services.catalog import CatalogByCategoriesMixin
 from settings_app.dynamic_preferences_registry import global_preferences_registry
 from banners_app.services import banner
-from goods_app.services.limited_products import random_product, \
-    get_all_products, get_limited_products, get_random_categories, get_hot_offers
+from goods_app.services.limited_products import (
+    random_product,
+    get_all_products,
+    get_limited_products,
+    get_random_categories,
+    get_hot_offers,
+)
 from goods_app.services.product_detail import CurrentProduct, context_pagination
 from goods_app.forms import ReviewForm
 from goods_app.models import Product
@@ -25,27 +30,28 @@ class IndexView(ListView):
 
     ::Страница: Главная
     """
+
     model = SellerProduct
-    template_name = 'goods_app/index.html'
-    context_object_name = 'products'
+    template_name = "goods_app/index.html"
+    context_object_name = "products"
 
     def get_queryset(self) -> Iterable:
         OPTIONS = global_preferences_registry.manager().by_name()
-        products = get_all_products(count=OPTIONS['count_popular_products'])
+        products = get_all_products(count=OPTIONS["count_popular_products"])
         return products
 
     def get_context_data(self, **kwargs) -> Dict:
         OPTIONS = global_preferences_registry.manager().by_name()
-        limited_products = get_limited_products(count=OPTIONS['count_limited_products'])
+        limited_products = get_limited_products(count=OPTIONS["count_limited_products"])
         if limited_products:
-            random_product.days_duration = OPTIONS['days_duration']
-            random_product.time_update = OPTIONS['time_update']
+            random_product.days_duration = OPTIONS["days_duration"]
+            random_product.time_update = OPTIONS["time_update"]
             random_product.update_product(queryset=get_limited_products())
         context = {
-            'banners': banner(),
-            'limited_products': limited_products,
-            'hot_offers': get_hot_offers(count=OPTIONS['count_hot_offers']),
-            'random_categories': get_random_categories(),
+            "banners": banner(),
+            "limited_products": limited_products,
+            "hot_offers": get_hot_offers(count=OPTIONS["count_hot_offers"]),
+            "random_categories": get_random_categories(),
             **random_product.get_context_data(),
             **super().get_context_data(**kwargs),
         }
@@ -58,28 +64,27 @@ class ProductDetailView(DetailView):
 
     ::Страница: Детальная страница продукта
     """
+
     model = Product
-    context_object_name = 'product'
-    template_name = 'goods_app/product_detail.html'
-    slug_url_kwarg = 'slug'
+    context_object_name = "product"
+    template_name = "goods_app/product_detail.html"
+    slug_url_kwarg = "slug"
 
     def get_context_data(self, **kwargs) -> Dict:
         OPTIONS = global_preferences_registry.manager().by_name()
         context = super().get_context_data(**kwargs)
-        product = CurrentProduct(instance=context['product'])
+        product = CurrentProduct(instance=context["product"])
         reviews = product.get_reviews
 
         context = {
-            'reviews_count': reviews.count(),
-            'comments': context_pagination(self.request, reviews,
-                                           size_page=OPTIONS['review_size_page']),
-
-            'form': ReviewForm(),
-            'specifications': product.get_specifications,
-            'sellers': product.get_sellers,
-            'tags': product.get_tags,
+            "reviews_count": reviews.count(),
+            "comments": context_pagination(self.request, reviews, size_page=OPTIONS["review_size_page"]),
+            "form": ReviewForm(),
+            "specifications": product.get_specifications,
+            "sellers": product.get_sellers,
+            "tags": product.get_tags,
             **product.get_calculate_prices(),
-            **context
+            **context,
         }
         return context
 
@@ -90,12 +95,11 @@ def get_reviews(request: HttpRequest) -> JsonResponse:
 
     ::Страница: Детальная страница продукта
     """
-    slug = request.GET.get('slug')
-    page = request.GET.get('page')
+    slug = request.GET.get("slug")
+    page = request.GET.get("page")
     product = CurrentProduct(slug=slug)
     reviews = product.get_reviews
-    return JsonResponse({**product.get_review_page(reviews, page),
-                         'slug': slug}, safe=False)
+    return JsonResponse({**product.get_review_page(reviews, page), "slug": slug}, safe=False)
 
 
 def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
@@ -104,7 +108,7 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
 
     ::Страница: Детальная страница продукта
     """
-    slug = request.POST.get('slug')
+    slug = request.POST.get("slug")
     product = CurrentProduct(slug=slug)
     form = ReviewForm(request.POST)
     if form.is_valid():
@@ -112,14 +116,12 @@ def post_review(request: HttpRequest) -> Union[JsonResponse, Callable]:
         product.update_product_rating()
         reviews = product.get_reviews
         OPTIONS = global_preferences_registry.manager().by_name()
-        paginator = Paginator(reviews, per_page=OPTIONS['review_size_page'])
-        return JsonResponse({'num_pages': paginator.num_pages,
-                             'slug': slug}, safe=False)
-    elif form.errors.get('rating'):
-        rating_error = _('You should to indicate the product rating')
-        return JsonResponse({'num_pages': 0, 'rating_error': rating_error,
-                             'slug': slug}, safe=False)
-    return redirect(request.META.get('HTTP_REFERER'))
+        paginator = Paginator(reviews, per_page=OPTIONS["review_size_page"])
+        return JsonResponse({"num_pages": paginator.num_pages, "slug": slug}, safe=False)
+    elif form.errors.get("rating"):
+        rating_error = _("You should to indicate the product rating")
+        return JsonResponse({"num_pages": 0, "rating_error": rating_error, "slug": slug}, safe=False)
+    return redirect(request.META.get("HTTP_REFERER"))
 
 
 class FullCatalogView(CatalogByCategoriesMixin, View):
@@ -166,21 +168,22 @@ class FullCatalogView(CatalogByCategoriesMixin, View):
 
         return render(
             request,
-            'goods_app/catalog.html',
+            "goods_app/catalog.html",
             context={
-                'sellers': sellers,
-                'page_obj': page_obj,
-                'sort_type': sort_type,
-                'mini': mini,
-                'maxi': maxi,
-                'midi': midi,
-                'next_page': next_page,
-                'prev_page': prev_page,
-                'pages_list': pages_list,
-                'tags': tags,
-                'search': search,
-                'tag': tag,
-            })
+                "sellers": sellers,
+                "page_obj": page_obj,
+                "sort_type": sort_type,
+                "mini": mini,
+                "maxi": maxi,
+                "midi": midi,
+                "next_page": next_page,
+                "prev_page": prev_page,
+                "pages_list": pages_list,
+                "tags": tags,
+                "search": search,
+                "tag": tag,
+            },
+        )
 
 
 class AllCardForAjax(CatalogByCategoriesMixin, View):
@@ -222,10 +225,7 @@ class AllCardForAjax(CatalogByCategoriesMixin, View):
             # получаем товары с фильтром и актуальные стоимости
             filter_data = self.get_data_from_form(request)
             row_items_for_catalog, sellers, tags = self.get_full_data_with_filters(
-                search_query=search,
-                search_tag=tag,
-                slug=slug,
-                filter_data=filter_data
+                search_query=search, search_tag=tag, slug=slug, filter_data=filter_data
             )
 
         items_for_catalog, next_state = self.simple_sort(row_items_for_catalog, sort_type)
@@ -241,19 +241,21 @@ class AllCardForAjax(CatalogByCategoriesMixin, View):
         prev_page = str(page_obj.previous_page_number() if page_obj.has_previous() else 1)
 
         context = {
-            'pages_list': pages_list,
-            'page_obj': page_obj,
-            'sort_type': sort_type,
-            'next_page': next_page,
-            'prev_page': prev_page,
+            "pages_list": pages_list,
+            "page_obj": page_obj,
+            "sort_type": sort_type,
+            "next_page": next_page,
+            "prev_page": prev_page,
         }
 
-        return JsonResponse({
-            'html': render_to_string('elems/good_card.html', context=context),
-            'current_state': sort_type,
-            'next_state': next_state,
-            'next_page': next_page,
-            'prev_page': prev_page,
-            'pages_list': pages_list,
-            'sort_type': sort_type,
-        })
+        return JsonResponse(
+            {
+                "html": render_to_string("elems/good_card.html", context=context),
+                "current_state": sort_type,
+                "next_state": next_state,
+                "next_page": next_page,
+                "prev_page": prev_page,
+                "pages_list": pages_list,
+                "sort_type": sort_type,
+            }
+        )

@@ -7,56 +7,63 @@ from django.utils.translation import gettext_lazy as _
 
 
 class AddStoreForm(forms.ModelForm):
-
     class Meta:
         model = Seller
-        fields = '__all__'
+        fields = "__all__"
 
 
 class EditStoreForm(forms.ModelForm):
-
     class Meta:
         model = Seller
-        fields = ['name', 'description', 'address', 'email', 'phone', 'icon']
-        exclude = ['owner', 'slug']
+        fields = ["name", "description", "address", "email", "phone", "icon"]
+        exclude = ["owner", "slug"]
 
 
 class AddSellerProductForm(forms.ModelForm):
-
     class Meta:
         model = SellerProduct
-        fields = '__all__'
+        fields = "__all__"
 
 
 class EditSellerProductForm(forms.ModelForm):
-
     class Meta:
         model = SellerProduct
-        fields = ['price', 'quantity']
-        exclude = ['seller', 'product', ]
+        fields = ["price", "quantity"]
+        exclude = [
+            "seller",
+            "product",
+        ]
 
 
 class AddRequestNewProduct(forms.ModelForm):
-
     class Meta:
         model = ProductRequest
-        fields = ['category', 'name', 'description', 'store', 'notes','image']
-        exclude = ['code', 'slug', 'rating', 'is_published', 'tags']
+        fields = ["category", "name", "description", "store", "notes", "image"]
+        exclude = ["code", "slug", "rating", "is_published", "tags"]
 
 
 class AddRequestNewProductAdminForm(forms.ModelForm):
-    is_published = forms.BooleanField(label='Publishing status', required=False, widget=CheckboxInput())
+    is_published = forms.BooleanField(label="Publishing status", required=False, widget=CheckboxInput())
 
     class Meta:
         model = ProductRequest
-        exclude = ['rating', 'tags']
+        exclude = ["rating", "tags"]
 
 
 class ImportForm(forms.ModelForm):
-    file = forms.FileField(label=_('Your json file'), required=True, widget=FileInput(attrs={'class': 'import_row',
-                                                                                             'accept': '.json',
-                                                                                             }))
+    file = forms.FileField(
+        label=_("Your json file"),
+        required=True,
+        widget=FileInput(
+            attrs={
+                "class": "import_row",
+                "accept": ".json",
+            }
+        ),
+    )
 
     class Meta:
         model = ProductImportFile
-        fields = ['file', ]
+        fields = [
+            "file",
+        ]

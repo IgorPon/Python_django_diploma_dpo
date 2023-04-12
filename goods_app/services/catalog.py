@@ -27,46 +27,46 @@ class CatalogByCategoriesMixin:
                     next_state - следующее состояние типа сортировки(т.к. направление
                     сортировки меняется при повторном нажатии)
         """
-        next_state = ''
+        next_state = ""
 
-        if sort_type == 'name_inc':
-            next_state = 'name_dec'
+        if sort_type == "name_inc":
+            next_state = "name_dec"
             some_list = cls.sort_by_name(some_list, False)
 
-        if sort_type == 'name_dec':
-            next_state = 'name_inc'
+        if sort_type == "name_dec":
+            next_state = "name_inc"
             some_list = cls.sort_by_name(some_list, True)
 
-        if sort_type == 'price_inc':
-            next_state = 'price_dec'
+        if sort_type == "price_inc":
+            next_state = "price_dec"
             some_list = cls.sort_by_price(some_list, False)
 
-        if sort_type == 'price_dec':
-            next_state = 'price_inc'
+        if sort_type == "price_dec":
+            next_state = "price_inc"
             some_list = cls.sort_by_price(some_list, True)
 
-        if sort_type == 'comment_inc':
-            next_state = 'comment_dec'
+        if sort_type == "comment_inc":
+            next_state = "comment_dec"
             some_list = cls.sort_by_amount_of_comments(some_list, False)
 
-        if sort_type == 'comment_dec':
-            next_state = 'comment_inc'
+        if sort_type == "comment_dec":
+            next_state = "comment_inc"
             some_list = cls.sort_by_amount_of_comments(some_list, True)
 
-        if sort_type == 'pop_inc':
-            next_state = 'pop_dec'
+        if sort_type == "pop_inc":
+            next_state = "pop_dec"
             some_list = cls.sort_by_pop(some_list, False)
 
-        if sort_type == 'pop_dec':
-            next_state = 'pop_inc'
+        if sort_type == "pop_dec":
+            next_state = "pop_inc"
             some_list = cls.sort_by_pop(some_list, True)
 
-        if sort_type == 'newness_inc':
-            next_state = 'newness_dec'
+        if sort_type == "newness_inc":
+            next_state = "newness_dec"
             some_list = cls.sort_by_newness(some_list, False)
 
-        if sort_type == 'newness_dec':
-            next_state = 'newness_inc'
+        if sort_type == "newness_dec":
+            next_state = "newness_inc"
             some_list = cls.sort_by_newness(some_list, True)
 
         return some_list, next_state
@@ -77,23 +77,22 @@ class CatalogByCategoriesMixin:
         goods_with_sale = get_discounted_prices_for_seller_products(some_goods)
         result = []
         for elem in goods_with_sale:
-
             if elem[1] is not None:
                 elem[0].price_after_discount = round(elem[1], 2)
                 elem[0].total = round(elem[1], 2)
-                elem[0].sale = '1'
+                elem[0].sale = "1"
                 elem[0].discount = elem[2]
                 result.append(elem[0])
 
             else:
                 elem[0].total = elem[0].price
-                elem[0].sale = '0'
+                elem[0].sale = "0"
                 result.append(elem[0])
 
         return result
 
     @classmethod
-    def get_full_data(cls, tag: str = '', search: str = '', slug: str = '') -> Tuple[QuerySet or List, List, List]:
+    def get_full_data(cls, tag: str = "", search: str = "", slug: str = "") -> Tuple[QuerySet or List, List, List]:
         """метод возвращвет все товары или товары по тэгу или товары подходящие под запрос из строки поиска"""
 
         if tag:
@@ -115,38 +114,54 @@ class CatalogByCategoriesMixin:
     @classmethod
     def get_data_by_slug(cls, some_slug: str) -> QuerySet:
         """метод возвращает список товаров по слагу"""
-        acceptable_categories = ProductCategory.objects.get(slug=some_slug).get_children() \
-            if ProductCategory.objects.get(slug=some_slug).get_children() \
+        acceptable_categories = (
+            ProductCategory.objects.get(slug=some_slug).get_children()
+            if ProductCategory.objects.get(slug=some_slug).get_children()
             else [ProductCategory.objects.get(slug=some_slug)]
+        )
 
-        return SellerProduct.objects.select_related('product', 'seller', ) \
-            .prefetch_related('product__category', 'product__tags') \
-            .filter(
-            product__category__in=acceptable_categories
-        ).annotate(Count('product__product_comments'))
+        return (
+            SellerProduct.objects.select_related(
+                "product",
+                "seller",
+            )
+            .prefetch_related("product__category", "product__tags")
+            .filter(product__category__in=acceptable_categories)
+            .annotate(Count("product__product_comments"))
+        )
 
     @classmethod
     def get_data_by_tag(cls, some_tag: str) -> QuerySet:
         """метод возвращает список товаров по тэгу"""
 
-        return SellerProduct.objects.select_related('product', 'seller', ) \
-            .prefetch_related('product__category', 'product__tags') \
-            .filter(
-            product__tags__name__icontains=some_tag
-        ).annotate(Count('product__product_comments'))
+        return (
+            SellerProduct.objects.select_related(
+                "product",
+                "seller",
+            )
+            .prefetch_related("product__category", "product__tags")
+            .filter(product__tags__name__icontains=some_tag)
+            .annotate(Count("product__product_comments"))
+        )
 
     @classmethod
     def get_data_by_search_query(cls, some_search_query: str) -> QuerySet:
         """метод возвращает список товаров по запросу из строки поиска"""
 
-        return SellerProduct.objects.select_related('product', 'seller', ) \
-            .prefetch_related('product__category', 'product__tags') \
+        return (
+            SellerProduct.objects.select_related(
+                "product",
+                "seller",
+            )
+            .prefetch_related("product__category", "product__tags")
             .filter(
-            Q(product__name__icontains=some_search_query) |
-            Q(product__category__name__icontains=some_search_query) |
-            Q(product__tags__name__icontains=some_search_query) |
-            Q(seller__name__icontains=some_search_query)
-        ).annotate(Count('product__product_comments'))
+                Q(product__name__icontains=some_search_query)
+                | Q(product__category__name__icontains=some_search_query)
+                | Q(product__tags__name__icontains=some_search_query)
+                | Q(seller__name__icontains=some_search_query)
+            )
+            .annotate(Count("product__product_comments"))
+        )
 
     @classmethod
     def choose_popular_tags(cls, tags_list: List[Tag]) -> List:
@@ -163,29 +178,30 @@ class CatalogByCategoriesMixin:
     @classmethod
     def filtering_data(cls, some_goods: QuerySet, filter_data: Dict) -> QuerySet:
         """фильтрует товары в соответсвии с данными формы фильтров"""
-        print(f'filter*** {filter_data}')
-        print(f'start*** {some_goods}')
+        print(f"filter*** {filter_data}")
+        print(f"start*** {some_goods}")
         some_goods = some_goods.filter(
-            seller__name__icontains=filter_data['f_select'],
-            product__name__icontains=filter_data['f_title'],
-            quantity__gte=filter_data['in_stock'],
-            product__limited__icontains=filter_data['is_hot'],
-        ).annotate(Count('product__product_comments'))
-        print(f'big filter*** {some_goods}')
-        if filter_data.get('tag', False):
+            seller__name__icontains=filter_data["f_select"],
+            product__name__icontains=filter_data["f_title"],
+            quantity__gte=filter_data["in_stock"],
+            product__limited__icontains=filter_data["is_hot"],
+        ).annotate(Count("product__product_comments"))
+        print(f"big filter*** {some_goods}")
+        if filter_data.get("tag", False):
             some_goods = some_goods.filter(
-                product__tags__name=filter_data['tag'],
+                product__tags__name=filter_data["tag"],
             )
-        print(f'tag*** {some_goods}')
-        if filter_data['f_price'][0] and filter_data['f_price'][1]:
+        print(f"tag*** {some_goods}")
+        if filter_data["f_price"][0] and filter_data["f_price"][1]:
             some_goods = cls.filtering_by_price(filter_data, some_goods)
-        print(f'price*** {some_goods}')
+        print(f"price*** {some_goods}")
 
         return some_goods
 
     @classmethod
-    def get_full_data_with_filters(cls, search_query: str or None, search_tag: str or None, slug: str, filter_data: Dict
-                                   ) -> Tuple:
+    def get_full_data_with_filters(
+        cls, search_query: str or None, search_tag: str or None, slug: str, filter_data: Dict
+    ) -> Tuple:
         """
         метод для получения всех необходимых данных для отрисовки каталога с фильтрами
         :param search_query: пользовательский запрос из поисковой строки
@@ -212,7 +228,7 @@ class CatalogByCategoriesMixin:
         return goods, sellers, tags
 
     @classmethod
-    def get_sellers_and_tags(cls, some_goods: QuerySet, main_tag: str = '') -> Tuple[List, List]:
+    def get_sellers_and_tags(cls, some_goods: QuerySet, main_tag: str = "") -> Tuple[List, List]:
         """метод возвращает уникальных продавцов и тэги по списку товаров"""
         sellers = []
         tags = []
@@ -232,8 +248,8 @@ class CatalogByCategoriesMixin:
     def filtering_by_price(cls, filter_data: dict, some_goods_list: QuerySet) -> List:
         """метод фильтрации списка товаров по минимальной и максимальной стоимостям"""
 
-        mini = int(filter_data['f_price'][0], 0)
-        maxi = int(filter_data['f_price'][1], 0)
+        mini = int(filter_data["f_price"][0], 0)
+        maxi = int(filter_data["f_price"][1], 0)
 
         goods_with_price = cls.add_sale_prices_in_goods_if_needed(some_goods_list)
         result_goods = []
@@ -324,52 +340,58 @@ class CatalogByCategoriesMixin:
         :return: словарь со значениями фильтров и тэга
         """
         filter_data = {
-            'f_price': request.GET.get('price').split(';') if request.GET.get('price') else ['0', '1000000'],
-            'f_title': request.GET.get('title') if request.GET.get('title', None) else '',
-            'f_select': request.GET.get('select') if request.GET.get('select', None) and request.GET.get(
-                'select') != 'seller' else '',
-            'in_stock': 1 if request.GET.get('in_stock', None) == '1' else 0,
-            'is_hot': cls.get_is_hot_param(request),
-            'tag': request.GET.get('tag') if request.GET.get('tag', None) else '',
+            "f_price": request.GET.get("price").split(";") if request.GET.get("price") else ["0", "1000000"],
+            "f_title": request.GET.get("title") if request.GET.get("title", None) else "",
+            "f_select": request.GET.get("select")
+            if request.GET.get("select", None) and request.GET.get("select") != "seller"
+            else "",
+            "in_stock": 1 if request.GET.get("in_stock", None) == "1" else 0,
+            "is_hot": cls.get_is_hot_param(request),
+            "tag": request.GET.get("tag") if request.GET.get("tag", None) else "",
         }
 
         return filter_data
 
     @classmethod
     def get_is_hot_param(cls, request: HttpRequest):
-        if request.GET.get('is_hot', None) and request.GET.get('is_hot', None) == '1':
+        if request.GET.get("is_hot", None) and request.GET.get("is_hot", None) == "1":
             return True
         else:
-            return ''
+            return ""
 
     @classmethod
     def get_request_params_for_full_catalog(cls, request: HttpRequest) -> Tuple:
         """метод возвращает все все необходимые параметры гет-запроса для каталога без учета категории"""
-        search = request.GET.get('query', None) \
-            if request.GET.get('query', None) and request.GET.get('query', None) != 'undefined' else ''
-        tag = request.GET.get('main_tag', None) if request.GET.get('main_tag', None) else ''
-        sort_type = request.GET.get('sort_type', None) if request.GET.get('sort_type', None) else 'price_inc'
-        page = request.GET.get('page', None) if request.GET.get('page', None) else 1
-        slug = request.GET.get('slug', None) if request.GET.get('slug', None) else ''
+        search = (
+            request.GET.get("query", None)
+            if request.GET.get("query", None) and request.GET.get("query", None) != "undefined"
+            else ""
+        )
+        tag = request.GET.get("main_tag", None) if request.GET.get("main_tag", None) else ""
+        sort_type = request.GET.get("sort_type", None) if request.GET.get("sort_type", None) else "price_inc"
+        page = request.GET.get("page", None) if request.GET.get("page", None) else 1
+        slug = request.GET.get("slug", None) if request.GET.get("slug", None) else ""
 
         return search, tag, sort_type, page, slug
 
     @classmethod
     def check_if_filter_params(cls, request: HttpRequest) -> bool:
         """метод возвращает False если нет параметров фильтрации, иначе - True"""
-        if not request.GET.get('price') and \
-                not request.GET.get('title') and \
-                not request.GET.get('select') and \
-                not request.GET.get('in_stock') and \
-                not request.GET.get('is_hot') and \
-                not request.GET.get('tag'):
+        if (
+            not request.GET.get("price")
+            and not request.GET.get("title")
+            and not request.GET.get("select")
+            and not request.GET.get("in_stock")
+            and not request.GET.get("is_hot")
+            and not request.GET.get("tag")
+        ):
             return False
         return True
 
     @classmethod
     def custom_pagination_list(cls, paginator: Paginator, current_page: str or int) -> List:
-        """ метод возвращает списов страниц для отрисовки. при большом количестве страниц, заменяет некоторую
-            часть номеров (как в начале, так и в конце списка) страниц многоточиями
+        """метод возвращает списов страниц для отрисовки. при большом количестве страниц, заменяет некоторую
+        часть номеров (как в начале, так и в конце списка) страниц многоточиями
         """
         current_page = int(current_page)
         pages_list = list(range(1, paginator.num_pages + 1))
@@ -377,19 +399,19 @@ class CatalogByCategoriesMixin:
             return pages_list
         else:
             if current_page == 1:
-                res = [*list(range(1, 7)), '...', pages_list[-1]]
+                res = [*list(range(1, 7)), "...", pages_list[-1]]
                 return res
             elif current_page in [2, 3, 4, 5]:
-                res = [*list(range(1, current_page + 5)), '...', pages_list[-1]]
+                res = [*list(range(1, current_page + 5)), "...", pages_list[-1]]
                 return res
             elif current_page in [pages_list[-2], pages_list[-3], pages_list[-4], pages_list[-5]]:
-                res = [1, '...', *list(range(current_page - 2, pages_list[-1] + 1))]
+                res = [1, "...", *list(range(current_page - 2, pages_list[-1] + 1))]
                 return res
             elif current_page == pages_list[-1]:
-                res = [1, '...', *list(range(current_page - 4, pages_list[-1] + 1))]
+                res = [1, "...", *list(range(current_page - 4, pages_list[-1] + 1))]
                 return res
             else:
-                res = [1, '...', *list(range(current_page - 2, current_page + 3)), '...', pages_list[-1]]
+                res = [1, "...", *list(range(current_page - 2, current_page + 3)), "...", pages_list[-1]]
                 return res
 
 
@@ -397,9 +419,9 @@ def get_categories() -> QuerySet:
     """
     Get all categories
     """
-    categories_cache_key = 'categories:{}'.format('all')
+    categories_cache_key = "categories:{}".format("all")
     categories = cache.get(categories_cache_key)
     if not categories:
-        categories = ProductCategory.objects.select_related('parent').all()
+        categories = ProductCategory.objects.select_related("parent").all()
         cache.set(categories_cache_key, categories, 60 * 60)
     return categories

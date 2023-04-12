@@ -16,8 +16,8 @@ from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 
 
 class CustomPagesModule(modules.DashboardModule):
-    title = _('Settings')
-    template = 'admin/admin-setup-dashboard.html'
+    title = _("Settings")
+    template = "admin/admin-setup-dashboard.html"
 
     def is_empty(self) -> bool:
         return False
@@ -32,49 +32,47 @@ class CustomIndexDashboard(Dashboard):
     """
     Custom index dashboard.
     """
+
     def init_with_context(self, context: Any) -> None:
         # append an app list module for "Applications"
-        self.children.append(modules.Group(
-            display="tabs",
-            children=[
-                modules.AppList(
-                    title=_('Applications'),
-                    exclude=('django.contrib.*',
-                             'allauth.*',
-                             'dynamic_preferences.*',
-                             'profiles_app.*',
-                             'taggit.*',
-                             'django_celery_beat.*',),
-                ),
-                modules.AppList(
-                    title=_('Administration'),
-                    models=('django.contrib.*',
-                            'allauth.*',
-                            'profiles_app.*',
-                            'taggit.*',
-                            'django_celery_beat.*'),
-                ),
-            ]
-        ))
-        self.children.append(modules.RecentActions(_('Recent Actions'), 5))
+        self.children.append(
+            modules.Group(
+                display="tabs",
+                children=[
+                    modules.AppList(
+                        title=_("Applications"),
+                        exclude=(
+                            "django.contrib.*",
+                            "allauth.*",
+                            "dynamic_preferences.*",
+                            "profiles_app.*",
+                            "taggit.*",
+                            "django_celery_beat.*",
+                        ),
+                    ),
+                    modules.AppList(
+                        title=_("Administration"),
+                        models=("django.contrib.*", "allauth.*", "profiles_app.*", "taggit.*", "django_celery_beat.*"),
+                    ),
+                ],
+            )
+        )
+        self.children.append(modules.RecentActions(_("Recent Actions"), 5))
 
 
 class CustomAppIndexDashboard(AppIndexDashboard):
     """
     Custom app index dashboard.
     """
-    title = ''
+
+    title = ""
 
     def __init__(self, *args, **kwargs) -> None:
         AppIndexDashboard.__init__(self, *args, **kwargs)
         # append a model list module and a recent actions module
         self.children += [
             modules.ModelList(self.app_title, self.models),
-            modules.RecentActions(
-                _('Recent Actions'),
-                include_list=self.get_app_content_types(),
-                limit=5
-            ),
+            modules.RecentActions(_("Recent Actions"), include_list=self.get_app_content_types(), limit=5),
         ]
 
     def init_with_context(self, context: Any) -> None:

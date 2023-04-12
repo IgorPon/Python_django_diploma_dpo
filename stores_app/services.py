@@ -65,7 +65,7 @@ class StoreServiceMixin:
         """
         Get all stores
         """
-        stores_cache_key = 'stores:all'
+        stores_cache_key = "stores:all"
         stores = cache.get(stores_cache_key)
         if not stores:
             stores = Seller.objects.all()
@@ -77,7 +77,7 @@ class StoreServiceMixin:
         """
         Get all stores by user
         """
-        stores_cache_key = 'stores:{}'.format(user.id)
+        stores_cache_key = "stores:{}".format(user.id)
         stores = cache.get(stores_cache_key)
         if not stores:
             stores = Seller.objects.filter(owner=user)
@@ -89,8 +89,8 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        store = Seller.objects.get(slug=request.GET.get('id'))
-        messages.add_message(request, settings.SUCCESS_DEL_STORE, _(f'The {store.name} was removed'))
+        store = Seller.objects.get(slug=request.GET.get("id"))
+        messages.add_message(request, settings.SUCCESS_DEL_STORE, _(f"The {store.name} was removed"))
         store.delete()
 
     @classmethod
@@ -98,14 +98,12 @@ class StoreServiceMixin:
         """
         Create new SellerProduct
         """
-        if SellerProduct.objects.filter(seller=data['seller'], product=data['product']).exists():
+        if SellerProduct.objects.filter(seller=data["seller"], product=data["product"]).exists():
             return False
         else:
             SellerProduct.objects.create(
-                seller=data['seller'],
-                product=data['product'],
-                price=data['price'],
-                quantity=data['quantity'])
+                seller=data["seller"], product=data["product"], price=data["price"], quantity=data["quantity"]
+            )
             return True
 
     @classmethod
@@ -113,8 +111,8 @@ class StoreServiceMixin:
         """
         Edit SellerProduct instance
         """
-        instance.price = data['price']
-        instance.quantity = data['quantity']
+        instance.price = data["price"]
+        instance.quantity = data["quantity"]
         instance.save()
 
     @classmethod
@@ -122,13 +120,12 @@ class StoreServiceMixin:
         """
         Get all products, added by user
         """
-        owner_sp_cache_key = 'seller_sp:{}'.format(seller.id)
+        owner_sp_cache_key = "seller_sp:{}".format(seller.id)
         products = cache.get(owner_sp_cache_key)
         if not products:
-            products = SellerProduct.objects.select_related('seller', 'product',
-                                                            'product__category',
-                                                            'product__category__parent') \
-                                            .filter(seller=seller)
+            products = SellerProduct.objects.select_related(
+                "seller", "product", "product__category", "product__category__parent"
+            ).filter(seller=seller)
             cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
         products = get_discounted_prices_for_seller_products(products)
         return products
@@ -138,13 +135,12 @@ class StoreServiceMixin:
         """
         Get all products, added by user
         """
-        owner_sp_cache_key = 'owner_sp:{}'.format(user.id)
+        owner_sp_cache_key = "owner_sp:{}".format(user.id)
         products = cache.get(owner_sp_cache_key)
         if not products:
-            products = SellerProduct.objects.select_related('seller', 'product',
-                                                            'product__category',
-                                                            'product__category__parent') \
-                                            .filter(seller__owner=user)
+            products = SellerProduct.objects.select_related(
+                "seller", "product", "product__category", "product__category__parent"
+            ).filter(seller__owner=user)
             cache.set(owner_sp_cache_key, products, 24 * 60 * 60)
         products = get_discounted_prices_for_seller_products(products)
         return products
@@ -154,12 +150,14 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = SellerProduct.objects.select_related('seller', 'product',
-                                                    'product__category',
-                                                    'product__category__parent') \
-                                    .get(id=request.GET.get('id'))
-        messages.add_message(request, settings.SUCCESS_DEL_PRODUCT,
-                             _(f'Product {item.product.name} from the store {item.seller.name} was removed'))
+        item = SellerProduct.objects.select_related(
+            "seller", "product", "product__category", "product__category__parent"
+        ).get(id=request.GET.get("id"))
+        messages.add_message(
+            request,
+            settings.SUCCESS_DEL_PRODUCT,
+            _(f"Product {item.product.name} from the store {item.seller.name} was removed"),
+        )
         item.delete()
 
     @classmethod
@@ -167,14 +165,15 @@ class StoreServiceMixin:
         """
         Get Products by category, Seller instance or get all Products
         """
-        if 'category_id' in kwargs.keys():
-            products = Product.objects.select_related('category', 'category__parent')\
-                                      .filter(category=kwargs.get('category_id'))
+        if "category_id" in kwargs.keys():
+            products = Product.objects.select_related("category", "category__parent").filter(
+                category=kwargs.get("category_id")
+            )
         else:
-            base_products_cache_key = 'base_products:all'
+            base_products_cache_key = "base_products:all"
             products = cache.get(base_products_cache_key)
             if not products:
-                products = Product.objects.select_related('category', 'category__parent').all()
+                products = Product.objects.select_related("category", "category__parent").all()
                 cache.set(base_products_cache_key, products, 24 * 60 * 60)
         return products
 
@@ -183,15 +182,16 @@ class StoreServiceMixin:
         """
         Get viewed SellerProducts by user
         """
-        viewed_cache_key = 'viewed:{}'.format(user.id)
+        viewed_cache_key = "viewed:{}".format(user.id)
         products = cache.get(viewed_cache_key)
         if not products:
-            products = SellerProduct.objects.select_related('seller', 'product',
-                                                            'product__category',
-                                                            'product__category__parent') \
-                                            .prefetch_related(Prefetch('viewed_list',
-                                                                   queryset=ViewedProduct.objects.filter(user=user))) \
-                                            .filter(viewed_list__user=user)
+            products = (
+                SellerProduct.objects.select_related(
+                    "seller", "product", "product__category", "product__category__parent"
+                )
+                .prefetch_related(Prefetch("viewed_list", queryset=ViewedProduct.objects.filter(user=user)))
+                .filter(viewed_list__user=user)
+            )
             cache.set(viewed_cache_key, products, 24 * 60 * 60)
         return products
 
@@ -200,7 +200,7 @@ class StoreServiceMixin:
         """
         Get last user Order
         """
-        last_order_cache_key = 'user_last_order:{}'.format(user.id)
+        last_order_cache_key = "user_last_order:{}".format(user.id)
         order = cache.get(last_order_cache_key)
         if not order:
             order = cls.get_all_orders(user=user).last()
@@ -212,7 +212,7 @@ class StoreServiceMixin:
         """
         Get all user Orders
         """
-        orders_cache_key = 'user_orders:{}'.format(user.id)
+        orders_cache_key = "user_orders:{}".format(user.id)
         orders = cache.get(orders_cache_key)
         if not orders:
             orders = Order.objects.filter(customer=user, in_order=True)
@@ -234,8 +234,8 @@ class StoreServiceMixin:
         """
         Create new ProductDiscount
         """
-        seller_products = data['seller_products']
-        data.pop('seller_products', None)
+        seller_products = data["seller_products"]
+        data.pop("seller_products", None)
         discount = ProductDiscount(**data)
         discount.save()
         discount.seller_products.set(seller_products)
@@ -247,7 +247,7 @@ class StoreServiceMixin:
         """
         Get all product discounts, added by user
         """
-        owner_sd_cache_key = 'owner_product_discounts:{}'.format(user.id)
+        owner_sd_cache_key = "owner_product_discounts:{}".format(user.id)
         product_discounts = cache.get(owner_sd_cache_key)
         if not product_discounts:
             product_discounts = ProductDiscount.objects.filter(seller__owner=user)
@@ -260,9 +260,9 @@ class StoreServiceMixin:
         Edit SellerProduct instance
         """
         for attr, value in data.items():
-            if attr != 'seller_products':
+            if attr != "seller_products":
                 setattr(instance, attr, value)
-        instance.seller_products.set(data['seller_products'])
+        instance.seller_products.set(data["seller_products"])
         instance.save()
 
     @classmethod
@@ -270,9 +270,12 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = ProductDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
-        messages.add_message(request, settings.SUCCESS_DEL_PRODUCT_DISCOUNT,
-                             _(f'Product discount {item.name} from the store {item.seller.name} was removed'))
+        item = ProductDiscount.objects.select_related("seller").get(id=request.GET.get("id"))
+        messages.add_message(
+            request,
+            settings.SUCCESS_DEL_PRODUCT_DISCOUNT,
+            _(f"Product discount {item.name} from the store {item.seller.name} was removed"),
+        )
         item.delete()
 
     @classmethod
@@ -289,7 +292,7 @@ class StoreServiceMixin:
         """
         Get all product discounts, added by user
         """
-        owner_gd_cache_key = 'owner_group_discounts:{}'.format(user.id)
+        owner_gd_cache_key = "owner_group_discounts:{}".format(user.id)
         group_discounts = cache.get(owner_gd_cache_key)
         if not group_discounts:
             group_discounts = GroupDiscount.objects.filter(seller__owner=user)
@@ -310,9 +313,12 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = GroupDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
-        messages.add_message(request, settings.SUCCESS_DEL_GROUP_DISCOUNT,
-                             _(f'Group discount {item.name} from the store {item.seller.name} was removed'))
+        item = GroupDiscount.objects.select_related("seller").get(id=request.GET.get("id"))
+        messages.add_message(
+            request,
+            settings.SUCCESS_DEL_GROUP_DISCOUNT,
+            _(f"Group discount {item.name} from the store {item.seller.name} was removed"),
+        )
         item.delete()
 
     @classmethod
@@ -329,7 +335,7 @@ class StoreServiceMixin:
         """
         Get all product discounts, added by user
         """
-        owner_cd_ache_key = 'owner_card_discounts:{}'.format(user.id)
+        owner_cd_ache_key = "owner_card_discounts:{}".format(user.id)
         cart_discounts = cache.get(owner_cd_ache_key)
         if not cart_discounts:
             cart_discounts = CartDiscount.objects.filter(seller__owner=user)
@@ -350,7 +356,10 @@ class StoreServiceMixin:
         """
         Remove store
         """
-        item = CartDiscount.objects.select_related('seller').get(id=request.GET.get('id'))
-        messages.add_message(request, settings.SUCCESS_DEL_CART_DISCOUNT,
-                             _(f'Cart discount {item.name} from the store {item.seller.name} was removed'))
+        item = CartDiscount.objects.select_related("seller").get(id=request.GET.get("id"))
+        messages.add_message(
+            request,
+            settings.SUCCESS_DEL_CART_DISCOUNT,
+            _(f"Cart discount {item.name} from the store {item.seller.name} was removed"),
+        )
         item.delete()

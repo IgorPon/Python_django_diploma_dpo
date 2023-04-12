@@ -7,24 +7,32 @@ User = get_user_model()
 
 
 class RegisterForm(UserCreationForm):
-
     class Meta:
         model = User
         fields = [
-            'email', 'password1', 'password2',
-            'first_name', 'last_name', 'phone',
-            'city', 'avatar', 'address',
+            "email",
+            "password1",
+            "password2",
+            "first_name",
+            "last_name",
+            "phone",
+            "city",
+            "avatar",
+            "address",
         ]
-        field_classes = {'email': UsernameField}
+        field_classes = {"email": UsernameField}
 
 
 class AccountEditForm(forms.ModelForm):
-
     class Meta:
         model = User
         fields = [
-            'first_name', 'last_name', 'phone',
-            'city', 'avatar', 'address',
+            "first_name",
+            "last_name",
+            "phone",
+            "city",
+            "avatar",
+            "address",
         ]
 
 

@@ -9,5 +9,5 @@ def product_discount_cache_del_handler(sender, **kwargs) -> None:
     """
     Signal for clearing cache
     """
-    instance = kwargs['instance']
+    instance = kwargs["instance"]
     instance.image.delete()

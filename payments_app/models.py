@@ -6,10 +6,11 @@ class PaymentRequest(models.Model):
     """
     Модель запроса оплаты
     """
-    order = models.IntegerField(verbose_name=_('order number'))
-    account = models.IntegerField(verbose_name=_('account number'))
+
+    order = models.IntegerField(verbose_name=_("order number"))
+    account = models.IntegerField(verbose_name=_("account number"))
 
     class Meta:
-        verbose_name = _('payment request')
-        verbose_name_plural = _('requests')
-        db_table = 'payments'
+        verbose_name = _("payment request")
+        verbose_name_plural = _("requests")
+        db_table = "payments"

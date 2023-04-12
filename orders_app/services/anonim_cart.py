@@ -8,6 +8,7 @@ class AnonymCart:
     """
     Класс корзины анонимного пользователя
     """
+
     def __init__(self, request):
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)
@@ -19,19 +20,18 @@ class AnonymCart:
         """Добавление товара в корзину или обновление его количества"""
         product_id = str(product.id)
         if product_id not in self.cart:
-            self.cart[product_id] = {'quantity': 0,
-                                     'price': str(product.price)}
+            self.cart[product_id] = {"quantity": 0, "price": str(product.price)}
         if update_quantity:
-            delta = quantity - self.cart[product_id]['quantity']
+            delta = quantity - self.cart[product_id]["quantity"]
             if check_stock(product, delta):
-                self.cart[product_id]['quantity'] = quantity
+                self.cart[product_id]["quantity"] = quantity
                 self.save()
                 return True
             return False
         else:
             delta = quantity
             if check_stock(product, delta):
-                self.cart[product_id]['quantity'] += quantity
+                self.cart[product_id]["quantity"] += quantity
                 self.save()
                 return True
             return False
@@ -44,7 +44,7 @@ class AnonymCart:
         """Удаление товара из корзины."""
         product_id = str(product.id)
         if product_id in self.cart:
-            product.quantity += self.cart[product_id]['quantity']
+            product.quantity += self.cart[product_id]["quantity"]
             product.save()
             del self.cart[product_id]
             self.save()
@@ -55,10 +55,10 @@ class AnonymCart:
         products = SellerProduct.objects.filter(id__in=product_ids)
         cart = self.cart.copy()
         for product in products:
-            cart[str(product.id)]['seller_product'] = product
+            cart[str(product.id)]["seller_product"] = product
         for item in cart.values():
-            item['price'] = float(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
+            item["price"] = float(item["price"])
+            item["total_price"] = item["price"] * item["quantity"]
             yield item
 
     def __len__(self) -> int:
@@ -67,10 +67,7 @@ class AnonymCart:
 
     def total_sum(self):
         """Получение общей стоимости товаров в корзине"""
-        return sum(
-            Decimal(item['price']) * item['quantity']
-            for item in self.cart.values()
-        )
+        return sum(Decimal(item["price"]) * item["quantity"] for item in self.cart.values())
 
     def clear(self):
         """Очистка корзины"""

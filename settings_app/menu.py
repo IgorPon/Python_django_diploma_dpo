@@ -17,28 +17,33 @@ class CustomMenu(Menu):
     """
     Custom Menu for admin site.
     """
+
     def __init__(self, **kwargs) -> None:
         Menu.__init__(self, **kwargs)
         self.children += [
-            items.MenuItem(_('Dashboard'), reverse('admin:index')),
+            items.MenuItem(_("Dashboard"), reverse("admin:index")),
             items.AppList(
-                _('Applications'),
-                exclude=('django.contrib.*',
-                         'allauth.*',
-                         'profiles_app.*',
-                         'dynamic_preferences.*',
-                         'taggit.*',
-                         'django_celery_beat.*',),
+                _("Applications"),
+                exclude=(
+                    "django.contrib.*",
+                    "allauth.*",
+                    "profiles_app.*",
+                    "dynamic_preferences.*",
+                    "taggit.*",
+                    "django_celery_beat.*",
+                ),
             ),
             items.AppList(
-                _('Administration'),
-                models=('django.contrib.*',
-                        'allauth.*',
-                        'profiles_app.*',
-                        'taggit.*',
-                        'django_celery_beat.*',),
+                _("Administration"),
+                models=(
+                    "django.contrib.*",
+                    "allauth.*",
+                    "profiles_app.*",
+                    "taggit.*",
+                    "django_celery_beat.*",
+                ),
             ),
-            items.MenuItem(_('Settings'), reverse('settings-polls:admin-setup')),
+            items.MenuItem(_("Settings"), reverse("settings-polls:admin-setup")),
         ]
 
     def init_with_context(self, context: Any) -> None:
